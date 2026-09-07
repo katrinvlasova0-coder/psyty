@@ -30,23 +30,7 @@ export default function Masterplan() {
           PSYTY строится вокруг инфраструктуры для жизни, учёбы и работы. Дома — лишь часть окружения.
         </p>
 
-        <div className="mt-16 grid lg:grid-cols-[1fr_360px] gap-12">
-          <div className="relative aspect-[4/3] border border-background/20 overflow-hidden bg-foreground">
-            <svg viewBox="0 0 380 300" className="w-full h-full">
-              <g stroke="rgba(255,255,255,0.12)" strokeWidth="0.5" fill="none">
-                {Array.from({ length: 14 }).map((_, i) => <line key={`v${i}`} x1={i * 28} y1="0" x2={i * 28} y2="300" />)}
-                {Array.from({ length: 11 }).map((_, i) => <line key={`h${i}`} x1="0" y1={i * 28} x2="380" y2={i * 28} />)}
-              </g>
-              {zones.map((z) => (
-                <g key={z.name} onMouseEnter={() => setActive(z)} onMouseLeave={() => setActive(null)} onClick={() => setActive(z)} className="cursor-pointer">
-                  <circle cx={z.x} cy={z.y} r={active?.name === z.name ? z.r + 4 : z.r} fill={active?.name === z.name ? 'hsl(150 8% 40%)' : 'rgba(255,255,255,0.06)'} stroke="rgba(255,255,255,0.4)" strokeWidth="1" className="transition-all duration-300" />
-                  <text x={z.x} y={z.y + z.r + 12} textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="7.5" fontFamily="Inter" letterSpacing="0.5">{z.name}</text>
-                </g>
-              ))}
-            </svg>
-            <div className="absolute bottom-3 left-3 text-background/40 text-[10px] tracking-widest">ENVIRONMENT MAP · CONCEPTUAL</div>
-          </div>
-
+        <div className="mt-16 grid lg:grid-cols-[360px_1fr] gap-12">
           <div>
             <p className="text-[11px] tracking-[0.25em] uppercase text-background/40 mb-4">Узлы среды</p>
             <div className="space-y-1">

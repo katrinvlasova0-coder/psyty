@@ -1,16 +1,16 @@
 # PSYTY
 
-> PSYTY — Город Психологии. Концептуальный проект среды для людей, объединённых психологией, осознанным отношением к жизни и исследованием человеческой природы.
+> PSYTY — первый в мире город психологов, исследователей и ученых. Среда для человека, исследующего и развивающего в человеке Человека.
 
 ## Summary
-PSYTY предлагает жить, учиться и работать в одной среде: лаборатория, академия, практика, ферма, библиотека, лесные маршруты и дом тишины — в шаговой доступности.
+PSYTY предлагает жить, учиться и работать в одной среде: исследовательский, образовательный и реабилитационный центры, библиотека, спорт, природа и сообщество специалистов.
 
 ## Key facts
 - Brand: PSYTY
 - Domain: https://psyty.ru
 - Language: Russian (primary), English UI toggle
 - Category: intentional community / psychology-oriented settlement / real estate concept
-- Primary CTA: contact form for personal offer, PSYTY Book presentation request, questions to administration
+- Primary CTA: contact forms for residency, presentation (PSYTY Book), questions to administration
 
 ## Pages
 - / — home overview
