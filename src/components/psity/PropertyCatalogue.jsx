@@ -1,26 +1,115 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import SectionLabel from './SectionLabel';
+import { IMG } from './assets';
 
 const filters = ['Все', 'Участок', 'Дом', 'Таунхаус', 'Квартира', 'Резиденция'];
 
 const availLabel = { AVAILABLE: 'Доступно', RESERVED: 'Забронировано', SOLD: 'Продано' };
 const availColor = { AVAILABLE: 'text-accent', RESERVED: 'text-terracotta', SOLD: 'text-muted-foreground' };
 
+/** Static founding catalogue for GitHub Pages (no Base44 backend). */
+const PROPERTIES = [
+  {
+    id: 'jung-house-01',
+    title: 'Дом Jung',
+    collection: 'JUNG',
+    type: 'Дом',
+    area: 186,
+    land_area: 8,
+    bedrooms: 3,
+    bathrooms: 2,
+    terrace: true,
+    study: true,
+    availability: 'AVAILABLE',
+    price_on_request: true,
+    render_url: IMG.jung,
+  },
+  {
+    id: 'freud-town-01',
+    title: 'Таунхаус Freud',
+    collection: 'FREUD',
+    type: 'Таунхаус',
+    area: 142,
+    land_area: 3,
+    bedrooms: 3,
+    bathrooms: 2,
+    terrace: true,
+    study: true,
+    availability: 'AVAILABLE',
+    price_on_request: true,
+    render_url: IMG.square,
+  },
+  {
+    id: 'perls-plot-01',
+    title: 'Участок Perls',
+    collection: 'PERLS',
+    type: 'Участок',
+    area: null,
+    land_area: 10,
+    bedrooms: null,
+    bathrooms: null,
+    terrace: false,
+    study: false,
+    availability: 'AVAILABLE',
+    price_on_request: true,
+    render_url: IMG.farm,
+  },
+  {
+    id: 'rogers-apt-01',
+    title: 'Квартира Rogers',
+    collection: 'ROGERS',
+    type: 'Квартира',
+    area: 98,
+    land_area: null,
+    bedrooms: 2,
+    bathrooms: 1,
+    terrace: true,
+    study: true,
+    availability: 'RESERVED',
+    price_on_request: true,
+    render_url: IMG.library,
+  },
+  {
+    id: 'frankl-res-01',
+    title: 'Резиденция Frankl',
+    collection: 'FRANKL',
+    type: 'Резиденция',
+    area: 240,
+    land_area: 12,
+    bedrooms: 4,
+    bathrooms: 3,
+    terrace: true,
+    study: true,
+    availability: 'AVAILABLE',
+    price_on_request: true,
+    render_url: IMG.lab,
+  },
+  {
+    id: 'winnicott-house-01',
+    title: 'Дом Winnicott',
+    collection: 'WINNICOTT',
+    type: 'Дом',
+    area: 168,
+    land_area: 6,
+    bedrooms: 3,
+    bathrooms: 2,
+    terrace: true,
+    study: true,
+    availability: 'AVAILABLE',
+    price_on_request: true,
+    render_url: IMG.silent,
+  },
+];
+
 export default function PropertyCatalogue() {
-  const [items, setItems] = useState([]);
   const [filter, setFilter] = useState('Все');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    base44.entities.Property.list('-created_date', 50)
-      .then((d) => setItems(d))
-      .finally(() => setLoading(false));
-  }, []);
-
   const navigate = useNavigate();
-  const shown = filter === 'Все' ? items : items.filter((p) => p.type === filter);
+
+  const shown = useMemo(
+    () => (filter === 'Все' ? PROPERTIES : PROPERTIES.filter((p) => p.type === filter)),
+    [filter],
+  );
 
   return (
     <section className="py-32 lg:py-44 bg-background">
@@ -29,31 +118,65 @@ export default function PropertyCatalogue() {
         <h2 className="font-display text-[clamp(1.8rem,4vw,3.2rem)] leading-[1.1] max-w-3xl">
           Найдите свой дом в PSYTY.
         </h2>
+        <p className="mt-4 text-foreground/60 text-lg font-light max-w-2xl leading-[1.7]">
+          Предварительный каталог Founding Residents. Планировки и стоимость — по запросу.
+        </p>
 
         <div className="mt-10 flex flex-wrap gap-2">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 text-[12px] tracking-wider uppercase border transition-colors ${filter === f ? 'bg-foreground text-background border-foreground' : 'border-border text-foreground/60 hover:border-foreground'}`}>{f}</button>
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-2 text-[12px] tracking-wider uppercase border transition-colors ${
+                filter === f
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'border-border text-foreground/60 hover:border-foreground'
+              }`}
+            >
+              {f}
+            </button>
           ))}
         </div>
 
-        {loading ? (
-          <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => <div key={i} className="aspect-[4/3] bg-secondary animate-pulse" />)}
-          </div>
-        ) : shown.length === 0 ? (
+        {shown.length === 0 ? (
           <div className="mt-20 text-center py-20 border border-dashed border-border">
-            <p className="font-display text-3xl text-muted-foreground">Каталог формируется</p>
-            <p className="mt-3 text-foreground/50 text-sm">Первые объекты появятся на этапе Founding Residents.</p>
-            <button onClick={() => navigate('/contact')} className="mt-8 px-7 py-3.5 bg-foreground text-background text-[12px] tracking-[0.18em] uppercase">Узнать о первых объектах</button>
+            <p className="font-display text-3xl text-muted-foreground">В этой категории пока нет объектов</p>
+            <button
+              onClick={() => setFilter('Все')}
+              className="mt-8 px-7 py-3.5 bg-foreground text-background text-[12px] tracking-[0.18em] uppercase"
+            >
+              Смотреть все
+            </button>
           </div>
         ) : (
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {shown.map((p) => (
-              <div key={p.id} className="group border border-border bg-card hover:border-foreground transition-colors flex flex-col">
+              <div
+                key={p.id}
+                className="group border border-border bg-card hover:border-foreground transition-colors flex flex-col"
+              >
                 <div className="aspect-[4/3] bg-secondary overflow-hidden relative">
-                  {p.render_url ? <img src={p.render_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" /> : <div className="w-full h-full flex items-center justify-center"><span className="text-[11px] tracking-[0.3em] uppercase text-foreground/20">{p.collection}</span></div>}
-                  <span className={`absolute top-3 left-3 text-[10px] tracking-widest uppercase px-2 py-1 glass ${availColor[p.availability] || ''}`}>{availLabel[p.availability] || ''}</span>
-                  <span className="absolute top-3 right-3 text-[10px] tracking-widest uppercase px-2 py-1 glass text-foreground/70">{p.collection}</span>
+                  {p.render_url ? (
+                    <img
+                      src={p.render_url}
+                      alt={p.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-[11px] tracking-[0.3em] uppercase text-foreground/20">{p.collection}</span>
+                    </div>
+                  )}
+                  <span
+                    className={`absolute top-3 left-3 text-[10px] tracking-widest uppercase px-2 py-1 glass ${
+                      availColor[p.availability] || ''
+                    }`}
+                  >
+                    {availLabel[p.availability] || ''}
+                  </span>
+                  <span className="absolute top-3 right-3 text-[10px] tracking-widest uppercase px-2 py-1 glass text-foreground/70">
+                    {p.collection}
+                  </span>
                 </div>
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-display text-xl">{p.title}</h3>
@@ -66,8 +189,15 @@ export default function PropertyCatalogue() {
                     {p.terrace && <span>· терраса</span>}
                   </div>
                   <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
-                    <span className="font-display text-lg">{p.price_on_request ? 'Цена по запросу' : p.price ? `${p.price.toLocaleString('ru-RU')} ₽` : '—'}</span>
-                    <button onClick={() => navigate('/contact')} className="text-[11px] tracking-[0.18em] uppercase text-accent hover:text-foreground">Узнать →</button>
+                    <span className="font-display text-lg">
+                      {p.price_on_request ? 'Цена по запросу' : p.price ? `${p.price.toLocaleString('ru-RU')} ₽` : '—'}
+                    </span>
+                    <button
+                      onClick={() => navigate('/contact')}
+                      className="text-[11px] tracking-[0.18em] uppercase text-accent hover:text-foreground"
+                    >
+                      Узнать →
+                    </button>
                   </div>
                 </div>
               </div>
@@ -76,9 +206,24 @@ export default function PropertyCatalogue() {
         )}
 
         <div className="mt-12 flex flex-wrap gap-3">
-          <button onClick={() => navigate('/contact')} className="px-7 py-3.5 border border-foreground text-foreground text-[12px] tracking-[0.18em] uppercase hover:bg-foreground hover:text-background transition-colors">Получить планировки</button>
-          <button onClick={() => navigate('/contact')} className="px-7 py-3.5 border border-border text-foreground/70 text-[12px] tracking-[0.18em] uppercase hover:border-foreground transition-colors">Узнать стоимость</button>
-          <button onClick={() => navigate('/contact')} className="px-7 py-3.5 border border-border text-foreground/70 text-[12px] tracking-[0.18em] uppercase hover:border-foreground transition-colors">Забронировать</button>
+          <button
+            onClick={() => navigate('/contact')}
+            className="px-7 py-3.5 border border-foreground text-foreground text-[12px] tracking-[0.18em] uppercase hover:bg-foreground hover:text-background transition-colors"
+          >
+            Получить планировки
+          </button>
+          <button
+            onClick={() => navigate('/contact')}
+            className="px-7 py-3.5 border border-border text-foreground/70 text-[12px] tracking-[0.18em] uppercase hover:border-foreground transition-colors"
+          >
+            Узнать стоимость
+          </button>
+          <button
+            onClick={() => navigate('/contact')}
+            className="px-7 py-3.5 border border-border text-foreground/70 text-[12px] tracking-[0.18em] uppercase hover:border-foreground transition-colors"
+          >
+            Забронировать
+          </button>
         </div>
       </div>
     </section>
